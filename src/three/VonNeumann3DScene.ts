@@ -42,6 +42,7 @@ export class VonNeumann3DScene {
   public renderer: THREE.WebGLRenderer;
   private animationFrameId: number | null = null;
   private clock: THREE.Clock;
+  private resizeObserver: ResizeObserver | null = null;
 
   // Orbit controls state
   public target: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
@@ -98,8 +99,10 @@ export class VonNeumann3DScene {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color('#030712');
 
-    // 2. Camera
-    const aspect = container.clientWidth / container.clientHeight;
+    // 2. Camera - safe dimensions preventing Infinity or NaN
+    const initialWidth = container.clientWidth > 0 ? container.clientWidth : (window.innerWidth || 1280);
+    const initialHeight = container.clientHeight > 0 ? container.clientHeight : (Math.max(580, window.innerHeight - 64));
+    const aspect = initialWidth / initialHeight;
     this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
     this.updateCameraPosition();
 
@@ -110,13 +113,13 @@ export class VonNeumann3DScene {
       powerPreference: 'high-performance',
       preserveDrawingBuffer: true 
     });
-    this.renderer.setSize(container.clientWidth, container.clientHeight);
+    this.renderer.setSize(initialWidth, initialHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.15;
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     container.appendChild(this.renderer.domElement);
 
     // 4. RoomEnvironment for metallic PBR reflections
@@ -136,13 +139,22 @@ export class VonNeumann3DScene {
     this.buildIoInterface();
     this.buildOrthogonalBuses();
 
-    // 7. Event listeners
+    // 7. Event listeners & ResizeObserver
     this.bindEvents();
+
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.onResize();
+      });
+      this.resizeObserver.observe(this.container);
+    }
 
     // 8. Animation loop
     this.animate = this.animate.bind(this);
     this.animate();
   }
+
+  private _loggedOnce = false;
 
   private setupLighting() {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
@@ -1033,11 +1045,13 @@ export class VonNeumann3DScene {
 
   public onResize() {
     if (!this.container) return;
-    const width = this.container.clientWidth;
-    const height = this.container.clientHeight;
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
+    const width = this.container.clientWidth > 0 ? this.container.clientWidth : (window.innerWidth || 1280);
+    const height = this.container.clientHeight > 0 ? this.container.clientHeight : (Math.max(580, window.innerHeight - 64));
+    if (width > 0 && height > 0) {
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(width, height);
+    }
   }
 
   public resetCamera() {
@@ -1046,7 +1060,16 @@ export class VonNeumann3DScene {
 
   private animate() {
     this.animationFrameId = requestAnimationFrame(this.animate);
-    const delta = this.clock.getDelta();
+    const delta = Math.min(this.clock.getDelta(), 0.1);
+
+    // Auto-correct camera aspect if container was resized or aspect was degenerate
+    if (
+      this.camera.aspect === Infinity || 
+      isNaN(this.camera.aspect) || 
+      (this.container && this.container.clientHeight > 50 && Math.abs(this.camera.aspect - (this.container.clientWidth / this.container.clientHeight)) > 0.05)
+    ) {
+      this.onResize();
+    }
 
     this.cameraRadius = THREE.MathUtils.damp(this.cameraRadius, this.targetRadius, 8, delta);
     this.cameraTheta = THREE.MathUtils.damp(this.cameraTheta, this.targetTheta, 8, delta);
@@ -1274,6 +1297,9 @@ export class VonNeumann3DScene {
   public dispose() {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
+    }
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
     }
     window.removeEventListener('resize', this.onResize);
     this.renderer.dispose();

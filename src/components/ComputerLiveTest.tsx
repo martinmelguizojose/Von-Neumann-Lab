@@ -269,7 +269,6 @@ export const ComputerLiveTest: React.FC<ComputerLiveTestProps> = ({
                 )}
               </div>
             </div>
-          </div>
         ) : (
           /* INCOMPLETE: Friendly diagnostics for kids */
           <div className="space-y-5">

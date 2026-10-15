@@ -32,6 +32,7 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
     scene.selectedPieceId = selectedPieceId;
     scene.syncPlacedPieces(placedPieces);
     sceneInstanceRef.current = scene;
+    (window as any).__scene = scene;
     onSceneReady(scene);
 
     return () => {
@@ -50,9 +51,13 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({
   }, [placedPieces, selectedPieceId, onPieceMountChanged, onWrongSlotClicked]);
 
   return (
-    <div className="relative w-full h-full min-h-[580px] bg-slate-950 overflow-hidden select-none">
+    <div className="relative w-full h-full min-h-[580px] bg-slate-950 overflow-hidden select-none flex flex-col" style={{ width: '100%', height: '100%' }}>
       {/* 3D Canvas element */}
-      <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+      <div 
+        ref={containerRef} 
+        className="w-full flex-1 cursor-grab active:cursor-grabbing" 
+        style={{ width: '100%', height: '100%', minHeight: '580px' }}
+      />
 
       {/* Navigation & Interaction hints (Visor 3D) */}
       <div className="absolute top-4 left-4 pointer-events-none flex flex-col gap-1 text-[11px] font-mono text-slate-300 bg-slate-950/85 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-slate-700/80 shadow-xl max-w-xs">

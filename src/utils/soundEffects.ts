@@ -165,6 +165,40 @@ class SoundManager {
       // AudioContext fallback
     }
   }
+
+  playFanfare() {
+    if (!this.enabled) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    try {
+      const fanfareNotes = [
+        { freq: 523.25, time: 0, dur: 0.15 },    // C5
+        { freq: 523.25, time: 0.15, dur: 0.15 }, // C5
+        { freq: 523.25, time: 0.3, dur: 0.15 },  // C5
+        { freq: 659.25, time: 0.45, dur: 0.35 }, // E5
+        { freq: 783.99, time: 0.8, dur: 0.2 },   // G5
+        { freq: 1046.5, time: 1.0, dur: 0.6 }    // C6
+      ];
+
+      fanfareNotes.forEach(({ freq, time, dur }) => {
+        const osc = this.ctx!.createOscillator();
+        const gain = this.ctx!.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, this.ctx!.currentTime + time);
+
+        gain.gain.setValueAtTime(0.14, this.ctx!.currentTime + time);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx!.currentTime + time + dur);
+
+        osc.connect(gain);
+        gain.connect(this.ctx!.destination);
+        osc.start(this.ctx!.currentTime + time);
+        osc.stop(this.ctx!.currentTime + time + dur + 0.05);
+      });
+    } catch {
+      // AudioContext fallback
+    }
+  }
 }
 
 export const sounds = new SoundManager();

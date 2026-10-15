@@ -293,7 +293,7 @@ export default function App() {
           {/* Quick Actions */}
           <div className="flex items-center gap-2">
             {/* Diploma / Certification button */}
-            {(is2DCompleted || is3DCompleted) && (
+            {is3DCompleted && (
               <button
                 onClick={() => {
                   sounds.playClick();
@@ -307,22 +307,19 @@ export default function App() {
               </button>
             )}
 
-            <button
-              onClick={() => {
-                sounds.playClick();
-                if (sceneRef.current && viewMode === '3d') {
-                  sceneRef.current.isSimulating = true;
-                }
-                setShowLiveTestModal(true);
-              }}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-md transition-transform hover:scale-105 cursor-pointer"
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span className="hidden sm:inline">
-                {viewMode === '2d' ? 'Comprobar 2D' : 'Probar 3D'}
-              </span>
-              <span className="sm:hidden">Probar</span>
-            </button>
+            {viewMode === '2d' && (
+              <button
+                onClick={() => {
+                  sounds.playClick();
+                  setShowLiveTestModal(true);
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-xs shadow-md transition-transform hover:scale-105 cursor-pointer"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span className="hidden sm:inline">Comprobar 2D</span>
+                <span className="sm:hidden">Comprobar</span>
+              </button>
+            )}
 
             <button
               onClick={toggleSound}

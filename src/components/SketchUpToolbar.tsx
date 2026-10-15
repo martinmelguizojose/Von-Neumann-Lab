@@ -152,7 +152,7 @@ export const SketchUpToolbar: React.FC<SketchUpToolbarProps> = ({
               className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-display font-bold text-xs sm:text-sm shadow-xl shadow-emerald-500/20 transition-transform hover:scale-105 flex items-center justify-center gap-2"
             >
               <Play className="w-4 h-4 fill-current" />
-              <span>¡Comprobar y Probar Funcionamiento 3D!</span>
+              <span>Comprobar Funcionamiento 3D</span>
             </button>
           </div>
         </div>
