@@ -7,9 +7,7 @@ import {
   Sparkles, 
   User, 
   GraduationCap, 
-  Eye, 
-  ExternalLink,
-  Download
+  Eye
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
@@ -512,8 +510,8 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             </span>
           </a>
 
-          {/* Secondary helper actions for maximum resilience */}
-          <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400 pt-1">
+          {/* Secondary helper actions */}
+          <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
             <button
               onClick={() => {
                 sounds.playClick();
@@ -526,17 +524,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
               <span>Ver mi placa grabada en 3D</span>
             </button>
 
-            {diplomaDataUrl && (
-              <a
-                href={diplomaDataUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1 transition-colors underline decoration-amber-500/40"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>Abrir diploma en pantalla completa</span>
-              </a>
-            )}
+            <span>Guarda este PNG para entregarlo al profesor/a</span>
           </div>
 
           <p className="text-[11px] text-slate-500 text-center pt-1">
