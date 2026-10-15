@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+  
+  code, pre, .font-mono {
+    font-family: 'Fira Code', monospace;
+  }
+
+  .font-display {
+    font-family: 'Chakra Petch', sans-serif;
+  }
+}
+
+/* Custom circuit board grid styling */
+.circuit-bg {
+  background-color: #050b14;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.08) 0%, transparent 60%),
+    linear-gradient(rgba(30, 58, 138, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 58, 138, 0.15) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+}
+
+.pcb-grid {
+  background-color: #07131e;
+  background-image: 
+    radial-gradient(#1e3a5f 1.5px, transparent 1.5px),
+    linear-gradient(to right, rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px, 24px 24px;
+}
+
+/* Pulsing bus lines */
+@keyframes busFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.bus-flow-active {
+  background-size: 200% 200%;
+  animation: busFlow 1.5s linear infinite;
+}
+
+@keyframes signalPulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+.animate-signal {
+  animation: signalPulse 1.2s ease-in-out infinite;
+}
+
+/* CRT Screen Scanline effect for I/O monitor */
+.scanline {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.35) 50%
+  );
+  background-size: 100% 4px;
+}

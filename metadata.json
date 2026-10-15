@@ -1,0 +1,6 @@
+{
+  "name": "Arquitectura Von Neumann",
+  "description": "IES Beatriz Galindo La Latina - Videojuego educativo interactivo para aprender la Arquitectura de Von Neumann con puzzle 2D y taller de montaje en placa base 3D.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
